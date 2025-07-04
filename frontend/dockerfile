@@ -1,0 +1,25 @@
+# Stage 1: Use node to build if you have a build process (optional)
+# FROM node:18-alpine as build
+# WORKDIR /app
+# COPY . .
+# RUN npm install && npm run build
+
+# Stage 2: Serve using nginx
+FROM nginx:alpine
+
+# Copy static files
+COPY index.html script.js style.css /usr/share/nginx/html/
+COPY env.template.js /usr/share/nginx/html/
+
+# Copy entrypoint
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Replace default nginx config if needed (optional)
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# Set environment variable defaults (can override at runtime)
+ENV API_URL=http://localhost:8000/items/
+
+# Use our entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]

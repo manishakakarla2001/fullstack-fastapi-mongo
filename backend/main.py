@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import List
 from pymongo import MongoClient
 from fastapi.middleware.cors import CORSMiddleware
+import os 
 
 app = FastAPI()
 
@@ -16,8 +17,10 @@ app.add_middleware(
 )
 
 # MongoDB setup
-client = MongoClient("mongodb://mongo:27017/")
-db = client["testdb"]
+# Use environment variable for MongoDB URI
+mongo_uri = os.getenv("MONGODB_URI", "mongodb://root:example@localhost:27017")
+client = MongoClient(mongo_uri)
+db = client["crud_app"]
 collection = db["items"]
 
 # Pydantic model
